@@ -17,9 +17,36 @@ public class BinaryAnalysisJob extends Configured implements Tool  {
 	{
 		System.err.println("Usage: hadoop jar JARFILE.jar "+BinaryAnalysisJob.class.getName()+" <inDir> <outDir>");
 		System.err.println("    inDir  - HDFS input dir");
-		System.err.println("    outDir - HDFS output dir");
+		System.err.println("    outDir - HDFS output dir\n");
+		
+		System.err.println("    Required Settings:");
+		for(String name : requiredSettings)
+		{
+			System.err.println("        "+name);
+		}
+		System.err.println("    Optional Settings:");
+		for(String name : optionalSettings)
+		{
+			System.err.println("        "+name);
+		}
+		
 		System.exit(-1);
 	}
+	
+	private static String[] requiredSettings = 
+		{
+			"binary.analysis.output.parser",
+			"binary.analysis.program",
+			"binary.analysis.program.args",
+			"binary.analysis.program.exit.codes"
+		};
+	
+	private static String[] optionalSettings = 
+		{
+			"binary.analysis.file.extention",
+			"binary.analysis.execution.timeoutMS",
+			"binary.analysis.program.args.delim",
+		};
 	
 	@Override
 	public int run(String[] args) throws Exception {
@@ -33,14 +60,11 @@ public class BinaryAnalysisJob extends Configured implements Tool  {
 		String outDir = args[1];
 		
 		Configuration conf = getConf();
-		conf.set("binary.analysis.output.parser", SimpleOutputParser.class.getName());
-		conf.set("binary.analysis.file.extention", ".dat");
-		conf.setLong("binary.analysis.execution.timeoutMS", Long.MAX_VALUE);
-		
-		conf.set("binary.analysis.program", "md5sum");
-		conf.set("binary.analysis.program.args", "${file}");
-		conf.set("binary.analysis.program.args.delim", ",");
-		conf.set("binary.analysis.program.exit.codes", "0,1");
+		for(String name : requiredSettings)
+		{
+			if(conf.get(name) == null)
+				usage("Missing required setting: "+name);
+		}
 		
 		Job job = new Job(conf);
 		job.setJobName(BinaryAnalysisJob.class.getName()+" inDir="+inDir+", outDir="+outDir);

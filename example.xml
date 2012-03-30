@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+
+  <property>
+    <name>binary.analysis.output.parser</name>
+    <value>io.covert.binary.analysis.SimpleOutputParser</value>
+  </property>
+
+  <property>
+    <name>binary.analysis.file.extention</name>
+    <value>.dat</value>
+  </property>
+
+  <property>
+    <name>binary.analysis.execution.timeoutMS</name>
+    <value>9223372036854775807</value>
+  </property>
+
+  <property>
+    <name>binary.analysis.program</name>
+    <value>./wrapper.sh</value>
+  </property>
+
+  <property>
+    <name>binary.analysis.program.args</name>
+    <value>${file}</value>
+  </property>
+
+  <property>
+    <name>binary.analysis.program.args.delim</name>
+    <value>,</value>
+  </property>
+
+  <property>
+    <name>binary.analysis.program.exit.codes</name>
+    <value>0,1</value>
+  </property>
+</configuration>
