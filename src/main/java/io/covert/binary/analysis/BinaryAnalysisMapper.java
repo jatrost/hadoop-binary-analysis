@@ -32,6 +32,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class BinaryAnalysisMapper<K, V> extends Mapper<Text, BytesWritable, K, V>
@@ -66,7 +67,6 @@ public class BinaryAnalysisMapper<K, V> extends Mapper<Text, BytesWritable, K, V
 	
 	protected void setup(Context context) throws java.io.IOException ,InterruptedException 
 	{
-		
 		Configuration conf = context.getConfiguration();
 		try {
 			parser = (OutputParser<K, V>) Class.forName(conf.get("binary.analysis.output.parser")).newInstance();
@@ -121,7 +121,7 @@ public class BinaryAnalysisMapper<K, V> extends Mapper<Text, BytesWritable, K, V
 		uuid++;
 		File binaryFile = new File(dataDir, uuid+fileExtention);
 		writeToFile(value, binaryFile, context);
-		substitutionMap.put("file", binaryFile.getName());
+		substitutionMap.put("file", binaryFile.getPath());
 		
 		execute(key, value, context);
 		

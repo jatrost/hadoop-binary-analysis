@@ -31,6 +31,7 @@ public class BinaryAnalysisJob extends Configured implements Tool  {
 
 	private static void usage(String msg)
 	{
+		System.err.println("Error: "+msg);
 		System.err.println("Usage: hadoop jar JARFILE.jar "+BinaryAnalysisJob.class.getName()+" <inDir> <outDir>");
 		System.err.println("    inDir  - HDFS input dir");
 		System.err.println("    outDir - HDFS output dir\n");
