@@ -59,7 +59,6 @@ public class BinaryAnalysisMapper<K, V> extends Mapper<Text, BytesWritable, K, V
 	String[] args;
 	int[] exitCodes;
 	Map<String, Object> substitutionMap = new HashMap<String, Object>();
-	long uuid = 0;
 	File workingDir;
 	File dataDir;
 	String fileExtention;
@@ -118,8 +117,7 @@ public class BinaryAnalysisMapper<K, V> extends Mapper<Text, BytesWritable, K, V
 	protected void map(Text key, BytesWritable value, Context context) 
 		throws java.io.IOException ,InterruptedException 
 	{
-		uuid++;
-		File binaryFile = new File(dataDir, uuid+fileExtention);
+		File binaryFile = new File(dataDir, key.toString());
 		writeToFile(value, binaryFile, context);
 		substitutionMap.put("file", binaryFile.getPath());
 		
