@@ -18,7 +18,9 @@ package io.covert.binary.analysis;
 
 import io.covert.util.Utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.Map.Entry;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Level;
@@ -190,7 +193,7 @@ public class BinaryAnalysisMapper<K, V> extends Mapper<Text, BytesWritable, K, V
 		long fileCreationOverheadMS = System.currentTimeMillis();
 
 		FileOutputStream fileOut = new FileOutputStream(binaryFile);
-		fileOut.write(value.getBytes());
+		fileOut.write(value.getBytes(), 0, value.getLength());
 		fileOut.close();
 		fileCreationOverheadMS = System.currentTimeMillis() - fileCreationOverheadMS;
 		context.getCounter(STATS, FILE_CREATION_OVERHEAD_MS_COUNTER).increment(fileCreationOverheadMS);
