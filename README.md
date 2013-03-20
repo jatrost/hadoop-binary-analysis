@@ -51,6 +51,18 @@ is replaced by the unpacked filename from the Sequence File.  If multiple comman
 they can be specified by appending a delimiter and then each arg to the value of the ```binary.analysis.program.args```
 property
 
+# FileFormatToConverterJob
 
+Useful for performing distributed file computation, mainly tailored for converting large binary files to a different format.  Example, converting a weird compressed file format to a normal one that can use standard Hadoop tools.
 
+    hadoop fs -ls files | awk '{print $8}' > /tmp/all   
+    # OR hadoop fs -lsr | grep -v '^d' | awk '{print $8}' > /tmp/all
+    
+    mkdir file-lists
+    cd file-lists
+    split -l 10 /tmp/all
+    hadoop fs -put file-lists file-lists
+    
+    JAR=target/hadoop-binary-analysis-1.0-SNAPSHOT-job.jar
+    hadoop jar $JAR io.covert.util.FileFormatToConverterJob -Dstream.process.command="/opt/decompress.sh" file-lists
     

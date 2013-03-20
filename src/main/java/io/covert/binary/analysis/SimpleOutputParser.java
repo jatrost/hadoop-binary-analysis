@@ -25,8 +25,6 @@ import java.util.Map.Entry;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.Text;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class SimpleOutputParser implements OutputParser<Text, Text> {
 
 	List<Entry<Text, Text>> results = new LinkedList<Map.Entry<Text,Text>>();
@@ -46,7 +44,7 @@ public class SimpleOutputParser implements OutputParser<Text, Text> {
 	@Override
 	public void parse(Text key, BytesWritable val, File file) 
 	{
-		throw new NotImplementedException();
+		throw new RuntimeException("Not implemented");
 	}
 	
 	public java.util.Collection<java.util.Map.Entry<Text,Text>> getResults() 
