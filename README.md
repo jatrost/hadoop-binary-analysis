@@ -61,6 +61,7 @@ Useful for performing distributed file computation, mainly tailored for converti
     mkdir file-lists
     cd file-lists
     split -l 10 /tmp/all
+    cd ..
     hadoop fs -put file-lists file-lists
     
     JAR=target/hadoop-binary-analysis-1.0-SNAPSHOT-job.jar
