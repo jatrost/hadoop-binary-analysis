@@ -84,20 +84,40 @@ public class FileFormatToConverterJob extends Configured implements Tool  {
 		
 		@Override
 		protected void map(LongWritable key, final Text value, final Context context) throws IOException, InterruptedException {
-			LOG.info("Procesing file "+value);
+			LOG.info("Procesing file '"+value+"'");
+			
+			if(value.toString().trim().equals("")) 
+			{
+				LOG.info("Encountered empty string file name, skipping");
+				return;
+			}
 			
 			Configuration conf = context.getConfiguration();
+			FileSystem fs = FileSystem.get(conf);			
+			Path inputPath = new Path(value.toString());
+			Path outputPath = new Path(value.toString()+".gz");
+			
+			if(!fs.exists(inputPath))
+			{
+				LOG.info("Input path does not exist, skipping "+inputPath);
+				return;
+			}
+
+			OutputStream tmpDataOut;
+			try {
+				tmpDataOut = new GZIPOutputStream(fs.create(outputPath, false));
+			} catch (Exception e1) {
+				LOG.warn("Cannot Create output path for "+outputPath+", skipping "+inputPath);
+				return;
+			}
+			
+			final OutputStream dataOut = tmpDataOut;
+			final FSDataInputStream dataIn = fs.open(inputPath);
 			
 			final Process proc = Runtime.getRuntime().exec(conf.get("stream.process.command"));
-			
 			final InputStream processErrorOutput = proc.getErrorStream();
 			final InputStream processOutout = proc.getInputStream();
 			final OutputStream processInput = proc.getOutputStream();
-			
-			FileSystem fs = FileSystem.get(conf);
-			
-			final FSDataInputStream dataIn = fs.open(new Path(value.toString()));
-			final OutputStream dataOut = new GZIPOutputStream(fs.create(new Path(value.toString()+".gz"), false));
 			
 			final Thread stderrLogger = new Thread(){
 				public void run() {
